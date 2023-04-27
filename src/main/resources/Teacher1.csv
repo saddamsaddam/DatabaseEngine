@@ -1,0 +1,4 @@
+"id","name","address","gpa","date","Min","Max"
+"java.lang.Integer","java.lang.String","java.lang.String","java.lang.double","java.util.Date","{id=0, gpa=0}","{id=1000000, gpa=4}"
+"2","Ahmed Noor2","borisha2",".9","03-23-2020"
+"3","Ahmed Noor2","borisha2",".9","03-23-2020"

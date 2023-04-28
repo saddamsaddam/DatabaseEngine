@@ -1,21 +1,11 @@
 package Com.DatabaseEngine;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util. LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-
+import java.util.Vector;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
@@ -77,10 +67,13 @@ public class DBApp {
 		    	reader = new CSVReader(new FileReader("src/main/resources/"+strTableName+""+(filenumber-1)+".csv"));
 		    	path="src/main/resources/"+strTableName+""+(filenumber-1)+".csv";
 		    }
-	       // System.out.println(filenumber);
-	       // System.out.println(rownumber);
 
-	        List<String[]> existingData = reader.readAll();
+	        Vector<String[]> existingData = new Vector<String[]>();
+	        String[] record;
+	        while ((record = reader.readNext()) != null) {
+	            // Add each line to the vector
+	        	existingData.add(record);
+	        }
 	        reader.close();
 	        CSVWriter writer;
 	     // create a new instance of CSVWriter and specify the path to your CSV file
@@ -299,6 +292,7 @@ public class DBApp {
         	  writer.writeNext(data); 
         		 
         	 }
+        	
             
            }
 
@@ -322,6 +316,14 @@ public class DBApp {
 			     } else {
 			         System.out.println(f.getValue()+"-> "+f.getKey()+"  Failed to delete .");
 			     }
+			     //delete empty file
+        		 int rownumber=numberofrow(path);
+        		 if(rownumber==0)
+        		 {
+        			 tempFile = new File(path);
+        		     tempFile.delete(); 
+        		 }
+
 			 }
         
 
@@ -443,7 +445,7 @@ public class DBApp {
 		htblColNameMax.put("id","1000000");
 		htblColNameMax.put("gpa","4");
 		
-		dbApp.createTable( strTableName, "true", htblColNameType,htblColNameMin,htblColNameMax); 
+		//dbApp.createTable( strTableName, "true", htblColNameType,htblColNameMin,htblColNameMax); 
 		
 		//insert data
 		 LinkedHashMap htblColNameValue = new  LinkedHashMap( ); 
@@ -452,35 +454,35 @@ public class DBApp {
 		htblColNameValue.put("address","Dhaka");
 		htblColNameValue.put("gpa", ".9" ); 
 		htblColNameValue.put("date", "2020-03-23" ); 
-		dbApp.insertIntoTable( strTableName , htblColNameValue ); 
+		//dbApp.insertIntoTable( strTableName , htblColNameValue ); 
 		htblColNameValue.clear( ); 
 		htblColNameValue.put("id","1"); 
 		htblColNameValue.put("name","Ahmed Noor1");
 		htblColNameValue.put("address","borishal");
 		htblColNameValue.put("gpa", ".9" ); 
 		htblColNameValue.put("date", "2020-03-23" ); 
-		dbApp.insertIntoTable( strTableName , htblColNameValue ); 
+		//dbApp.insertIntoTable( strTableName , htblColNameValue ); 
 		htblColNameValue.clear( ); 
 		htblColNameValue.put("id","2"); 
 		htblColNameValue.put("name","Ahmed Noor2");
 		htblColNameValue.put("address","borisha2");
 		htblColNameValue.put("gpa", ".9" ); 
 		htblColNameValue.put("date", "2020-03-23" ); 
-		dbApp.insertIntoTable( strTableName , htblColNameValue ); 
+		//dbApp.insertIntoTable( strTableName , htblColNameValue ); 
 		htblColNameValue.clear( ); 
 		htblColNameValue.put("id","3"); 
 		htblColNameValue.put("name","Ahmed Noor2");
 		htblColNameValue.put("address","borisha2");
 		htblColNameValue.put("gpa", ".9" );
 		htblColNameValue.put("date", "2020-03-23" ); 
-		dbApp.insertIntoTable( strTableName , htblColNameValue ); 
+		//dbApp.insertIntoTable( strTableName , htblColNameValue ); 
 		htblColNameValue.clear( ); 
 		htblColNameValue.put("id","4"); 
 		htblColNameValue.put("name","Ahmed Noor2");
 		htblColNameValue.put("address","borisha2");
 		htblColNameValue.put("gpa", ".9" );
 		htblColNameValue.put("date", "2020-03-23" ); 
-		dbApp.insertIntoTable( strTableName , htblColNameValue ); 
+		//dbApp.insertIntoTable( strTableName , htblColNameValue ); 
 		 		
 		//update
 		htblColNameValue.clear( ); 
@@ -488,14 +490,14 @@ public class DBApp {
 		htblColNameValue.put("address","Dhakatoupdate");
 		htblColNameValue.put("gpa", ".94" );
 		htblColNameValue.put("date", "03-23-2020" ); 
-		dbApp.updateTable(strTableName, "1", htblColNameValue);
+		//dbApp.updateTable(strTableName, "1", htblColNameValue);
 		
 	   //delete 
 		htblColNameValue.clear( ); 
-		htblColNameValue.put("3","id"); 
-		htblColNameValue.put("1","id");
+		htblColNameValue.put("4","id"); 
+		//htblColNameValue.put("1","id");
 
-		//dbApp.deleteFromTable(strTableName, htblColNameValue);
+		dbApp.deleteFromTable(strTableName, htblColNameValue);
 
 
 	}

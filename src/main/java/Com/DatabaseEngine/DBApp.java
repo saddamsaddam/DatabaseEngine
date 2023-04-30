@@ -12,6 +12,8 @@ import com.opencsv.exceptions.CsvException;
 import com.opencsv.exceptions.CsvValidationException;
 
 public class DBApp {
+    Vector<String[]> vectordata = new Vector<String[]>();
+
 	public static int pagerownumber=2;
 
 	public DBApp() {
@@ -20,7 +22,8 @@ public class DBApp {
 	}
 
 	 public void createTable(String strTableName, String strClusteringKeyColumn,  LinkedHashMap<String,String> htblColNameType,  LinkedHashMap<String,String> htblColNameMin,  LinkedHashMap<String,String> htblColNameMax ) throws DBAppException, IOException 
-			 {		            
+			 {	
+		            vectordata = new Vector<String[]>(); 
 		            String[] header = new String[htblColNameType.size()+2];
 			        String[] data =new String[htblColNameType.size()+2];
 			       
@@ -38,10 +41,10 @@ public class DBApp {
 		        
 		        data[header.length-1]=htblColNameMax.toString();	
 		        data[header.length-2]=htblColNameMin.toString();
-		        
+		        vectordata.add(header);
+		        vectordata.add(data);
 		        CSVWriter writer = new CSVWriter(new FileWriter("src/main/resources/"+strTableName+".csv"));
-		        writer.writeNext(header);
-		        writer.writeNext(data);
+		        writer.writeAll(vectordata);
 		        System.out.println(" Table Created successfully.");
 
 		        writer.close();
@@ -67,7 +70,6 @@ public class DBApp {
 		    	reader = new CSVReader(new FileReader("src/main/resources/"+strTableName+""+(filenumber-1)+".csv"));
 		    	path="src/main/resources/"+strTableName+""+(filenumber-1)+".csv";
 		    }
-
 	        Vector<String[]> existingData = new Vector<String[]>();
 	        String[] record;
 	        while ((record = reader.readNext()) != null) {
@@ -80,15 +82,14 @@ public class DBApp {
 		   //  writer = new CSVWriter(new FileWriter("src/main/resources/"+strTableName+".csv"));
 		     if(rownumber>(pagerownumber-1))
 		     {
+				    vectordata = new Vector<String[]>();
 			     writer = new CSVWriter(new FileWriter("src/main/resources/"+strTableName+""+filenumber+".csv"));
 			     String[] row;
 			     String[] data=new String[htblColNameValue.size()];
 			     String[] header=tableheader(path);
-			        writer.writeNext(header);
-
+                   vectordata.add(header);
 			     String[] datatype=tabledatatype(path);
-			       writer.writeNext(datatype);
-
+                    vectordata.add(datatype);
 				   int i=0;
 				  for (Entry<String, String> e : htblColNameValue.entrySet())
 			        {
@@ -101,7 +102,9 @@ public class DBApp {
 		        // add the new row of data to the list or array of existing data
 
 		        // write the combined data (existing data and new data) to the CSV file
-		        writer.writeNext(data);
+				  vectordata.add(data);
+				  writer.writeAll(vectordata);
+		        
 
 		     }
 		     else
@@ -189,6 +192,8 @@ public class DBApp {
 		
 
          String[] row;
+		    vectordata = new Vector<String[]>();
+
          while ((row = reader.readNext()) != null) {
         	 if(row[0].equals(strClusteringKeyValue))
         	 {
@@ -203,8 +208,7 @@ public class DBApp {
    	                i++;
    		        }
         	 
-        	  writer.writeNext(data); 
- 
+              vectordata.add(data);
     
         	 }
         	 else
@@ -215,13 +219,13 @@ public class DBApp {
 	        		 data[i]=row[i];
 	        	 }
  
-        	  writer.writeNext(data); 
-        		 
+        		vectordata.add(data); 
         	 }
         	
 
             
            }
+         writer.writeAll(vectordata);
          reader.close();
 	     writer.close();
 	     //delete main file
@@ -252,6 +256,8 @@ public class DBApp {
  
 		 for (Entry<String, String> f : htblColNameValue.entrySet())
 	        {
+			    vectordata = new Vector<String[]>();
+
 			 CSVWriter writer = new CSVWriter(new FileWriter("src/main/resources/"+strTableName+"temp.csv"));
 			 
 			 int id=Integer.parseInt(f.getKey());
@@ -289,7 +295,7 @@ public class DBApp {
 	        		 data[i]=row[i];
 	        	 }
  
-        	  writer.writeNext(data); 
+        	  vectordata.add(data);
         		 
         	 }
         	
@@ -297,7 +303,7 @@ public class DBApp {
            }
 
          reader.close();
-
+         writer.writeAll(vectordata);
 	     writer.close();
 	     //delete main file
 	     File tempFile = new File(path);
@@ -430,7 +436,7 @@ public class DBApp {
 		System.out.println("Database Engine");
 		
 		//create table
-		String strTableName = "Teacher"; 
+		String strTableName = "Aiboot"; 
 		DBApp dbApp = new DBApp( ); 
 		 LinkedHashMap htblColNameType = new  LinkedHashMap( ); 
 		htblColNameType.put("id", "java.lang.Integer"); 
@@ -482,7 +488,7 @@ public class DBApp {
 		htblColNameValue.put("address","borisha2");
 		htblColNameValue.put("gpa", ".9" );
 		htblColNameValue.put("date", "2020-03-23" ); 
-		//dbApp.insertIntoTable( strTableName , htblColNameValue ); 
+		dbApp.insertIntoTable( strTableName , htblColNameValue ); 
 		 		
 		//update
 		htblColNameValue.clear( ); 
@@ -497,7 +503,7 @@ public class DBApp {
 		htblColNameValue.put("4","id"); 
 		//htblColNameValue.put("1","id");
 
-		dbApp.deleteFromTable(strTableName, htblColNameValue);
+		//dbApp.deleteFromTable(strTableName, htblColNameValue);
 
 
 	}
